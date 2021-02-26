@@ -10,7 +10,7 @@ describe('operators - debug', () => {
     const obs$ = of('my test value');
 
     // ACT
-    obs$.pipe(debug(), take(1)).subscribe();
+    obs$.pipe(debug()).subscribe();
 
     // ASSERT
     expect(console.log).toHaveBeenCalledWith('my test value');
@@ -21,7 +21,7 @@ describe('operators - debug', () => {
     const obs$ = of('my test value');
 
     // ACT
-    obs$.pipe(debug({ shouldIgnore: true }), take(1)).subscribe();
+    obs$.pipe(debug({ shouldIgnore: true })).subscribe();
 
     // ASSERT
     expect(console.log).not.toHaveBeenCalledWith('my test value');
