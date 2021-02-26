@@ -1,4 +1,15 @@
-# RxJS Debug Operator
+<h1 align="center">RxJS Debug Operator 🐛</h1>
+
+---
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/rxjs-debug-operator"><img src="https://img.shields.io/badge/npm-rxjs--debug--operator-blueviolet.svg" /></a>
+  <a href="https://www.npmjs.com/package/rxjs-debug-operator"><img src="https://img.shields.io/npm/v/rxjs-debug-operator.svg" /></a>
+  <a href="https://www.npmjs.com/package/rxjs-debug-operator"><img src="https://img.shields.io/npm/dt/rxjs-debug-operator.svg" /></a>
+  <a href="https://www.npmjs.com/package/rxjs-debug-operator"><img src="https://img.shields.io/npm/l/rxjs-debug-operator.svg" /></a>
+</p>
+
+---
 
 We've all had occasions where we've felt the need to simply pipe a `tap(console.log)` to our Observables to get some insight into what is occuring at a certain time.
 
