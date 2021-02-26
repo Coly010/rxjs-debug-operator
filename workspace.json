@@ -9,19 +9,40 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/operators/debug/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/operators/debug/**/*.ts"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/operators/debug"],
+          "outputs": [
+            "coverage/packages/operators/debug"
+          ],
           "options": {
             "jestConfig": "packages/operators/debug/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/packages/operators/debug",
+            "tsConfig": "packages/operators/debug/tsconfig.lib.json",
+            "packageJson": "packages/operators/debug/package.json",
+            "main": "packages/operators/debug/src/index.ts",
+            "assets": [
+              "packages/operators/debug/*.md"
+            ]
           }
         }
       }
     }
   },
-  "cli": { "defaultCollection": "@nrwl/workspace" }
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  }
 }

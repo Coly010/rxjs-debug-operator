@@ -17,7 +17,9 @@
     "paths": {
       "@rxjs-debug-operator/operators/debug": [
         "packages/operators/debug/src/index.ts"
-      ]
+      ],
+      "something": ["packages/testing/src/index.ts"],
+      "rxjs-debug-operator": ["packages/operators/debug/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
