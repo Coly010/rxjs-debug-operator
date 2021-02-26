@@ -15,4 +15,15 @@ describe('operators - debug', () => {
     // ASSERT
     expect(console.log).toHaveBeenCalledWith('my test value');
   });
+
+  it('should not log value to the console when shouldIgnore flag is set to true', () => {
+    // ARRANGE
+    const obs$ = of('my test value');
+
+    // ACT
+    obs$.pipe(debug({ shouldIgnore: true }), take(1)).subscribe();
+
+    // ASSERT
+    expect(console.log).not.toHaveBeenCalledWith('my test value');
+  });
 });
