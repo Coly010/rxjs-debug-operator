@@ -1,4 +1,8 @@
 {
   "name": "rxjs-debug-operator",
-  "version": "1.0.0"
+  "version": "1.0.1",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Coly010/rxjs-debug-operator"
+  }
 }
