@@ -33,7 +33,7 @@ Use your prefered import method:
 ```js
 import { debug } from 'rxjs-debug-operator';
 // OR
-const { of } = require('rxjs-debug-operator');
+const { debug } = require('rxjs-debug-operator');
 ```
 
 Then pipe it to your Observables:
