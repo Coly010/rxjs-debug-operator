@@ -28,6 +28,16 @@ Install the package:
 
 It's super simple to add and use:
 
+Use your prefered import method:
+
+```js
+import { debug } from 'rxjs-debug-operator';
+// OR
+const { of } = require('rxjs-debug-operator');
+```
+
+Then pipe it to your Observables:
+
 ```ts
 const obs$ = source.pipe(debug());
 ```
