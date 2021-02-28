@@ -48,6 +48,46 @@ It even allows you to turn it off if you are in a production environment, or for
 const obs$ = source.pipe(debug({ shouldIgnore: true }));
 ```
 
+### Examples
+
+We can use it on it's own to simply log out values to the console
+
+```ts
+const obs$ = of('my test value');
+obs$.pipe(debug()).subscribe();
+
+// OUTPUT:
+// my test value
+```
+
+We can also set up our own notification handlers if we prefer:
+
+```ts
+const obs$ = of('my test value');
+obs$
+  .pipe(debug({ next: (value) => console.log('my custom handler:', value) }))
+  .subscribe();
+
+// OUTPUT:
+// my custom handler:   my test value
+
+const obs$ = throwError('uh oh');
+obs$
+  .pipe(debug({ error: (value) => console.log('my error handler:', value) }))
+  .subscribe();
+
+// OUTPUT:
+// my error handler:   uh oh
+
+const obs$ = of('my test value');
+obs$
+  .pipe(debug({ complete: (value) => console.log('I completed') }))
+  .subscribe();
+
+// OUTPUT:
+// I completed
+```
+
 ## API
 
 ### Signature
@@ -58,6 +98,9 @@ const obs$ = source.pipe(debug({ shouldIgnore: true }));
 
 See the list of options available to configure the operator below
 
-| Option         |            Description            | Type      | Default |
-| -------------- | :-------------------------------: | --------- | ------- |
-| `shouldIgnore` | Do not perform the logging action | `boolean` | `false` |
+| Option         |                            Description                             | Type                      | Default                                          |
+| -------------- | :----------------------------------------------------------------: | ------------------------- | ------------------------------------------------ |
+| `shouldIgnore` |                  Do not perform the Debug actions                  | `boolean`                 | `false`                                          |
+| `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`      | `console.log`                                    |
+| `error`        |   Action to perform when Observer receives an Error notification   | `(value: unkown) => void` | `console.error`                                  |
+| `complete`     | Action to perform when Observer receives a Completion notification | `() => void`              | `console.log('Received Completed Notification')` |

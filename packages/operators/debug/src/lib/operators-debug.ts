@@ -1,20 +1,36 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { MonoTypeOperatorFunction } from 'rxjs/internal/types';
+import { MonoTypeOperatorFunction, Observer } from 'rxjs/internal/types';
 
-interface DebugOperatorConfig {
+export interface DebugOperatorConfig<T> extends Omit<Observer<T>, 'closed'> {
   shouldIgnore: boolean;
+  next: (value: T) => void;
+  error: (value: unknown) => void;
+  complete: () => void;
 }
 
-const defaultConfig: DebugOperatorConfig = {
-  shouldIgnore: false,
-};
+function createDefaultConfig<T>(): DebugOperatorConfig<T> {
+  return {
+    shouldIgnore: false,
+    next: console.log,
+    error: console.error,
+    complete: () => null,
+  };
+}
 
+/**
+ * Used to help debug the observable as it receives notifications
+ *
+ * @param config The config to be used to set up the operator
+ */
 export function debug<T>(
-  config: Partial<DebugOperatorConfig> = defaultConfig
+  config: Partial<DebugOperatorConfig<T>> = {}
 ): MonoTypeOperatorFunction<T> {
-  const { shouldIgnore } = config;
+  const { shouldIgnore, next, error, complete } = Object.assign(
+    createDefaultConfig(),
+    config
+  );
 
   return (source: Observable<T>) =>
-    shouldIgnore ? source : source.pipe(tap(console.log));
+    shouldIgnore ? source : source.pipe(tap(next, error, complete));
 }
