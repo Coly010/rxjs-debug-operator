@@ -98,9 +98,9 @@ obs$
 
 See the list of options available to configure the operator below
 
-| Option         |                            Description                             | Type                      | Default                                          |
-| -------------- | :----------------------------------------------------------------: | ------------------------- | ------------------------------------------------ |
-| `shouldIgnore` |                  Do not perform the Debug actions                  | `boolean`                 | `false`                                          |
-| `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`      | `console.log`                                    |
-| `error`        |   Action to perform when Observer receives an Error notification   | `(value: unkown) => void` | `console.error`                                  |
-| `complete`     | Action to perform when Observer receives a Completion notification | `() => void`              | `console.log('Received Completed Notification')` |
+| Option         |                            Description                             | Type                      | Default         |
+| -------------- | :----------------------------------------------------------------: | ------------------------- | --------------- |
+| `shouldIgnore` |                  Do not perform the Debug actions                  | `boolean`                 | `false`         |
+| `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`      | `console.log`   |
+| `error`        |   Action to perform when Observer receives an Error notification   | `(value: unkown) => void` | `console.error` |
+| `complete`     | Action to perform when Observer receives a Completion notification | `() => void`              | `() => null`    |
