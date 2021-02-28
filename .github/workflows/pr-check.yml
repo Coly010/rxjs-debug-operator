@@ -1,0 +1,12 @@
+name: PR Status Check
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install
+      - run: npm run affected:test
