@@ -1,6 +1,6 @@
 {
   "npmScope": "rxjs-debug-operator",
-  "affected": { "defaultBase": "main" },
+  "affected": { "defaultBase": "origin/main" },
   "implicitDependencies": {
     "workspace.json": "*",
     "package.json": { "dependencies": "*", "devDependencies": "*" },
