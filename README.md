@@ -15,8 +15,6 @@ We've all had occasions where we've felt the need to simply pipe a `tap(console.
 
 This operator aims to reduce the amount of typing you'll have to do!
 
-_P.S. This did originate as a meme idea :P_
-
 ## Usage
 
 ### Installation
@@ -42,6 +40,14 @@ Then pipe it to your Observables:
 const obs$ = source.pipe(debug());
 ```
 
+You can add a label to help identify the Observable:
+
+```ts
+const obs$ = source.pipe(debug('My Observable'));
+// OUTPUT
+// My Observable    {value}
+```
+
 It even allows you to turn it off if you are in a production environment, or for any other reason you wouldn't want to log to the console:
 
 ```ts
@@ -50,11 +56,43 @@ const obs$ = source.pipe(debug({ shouldIgnore: true }));
 
 ### Examples
 
-We can use it on it's own to simply log out values to the console
+We can use it on its own to simply log out values to the console
 
 ```ts
 const obs$ = of('my test value');
 obs$.pipe(debug()).subscribe();
+
+// OUTPUT:
+// my test value
+```
+
+We can add a label to the logs:
+
+```ts
+const obs$ = of('my test value');
+obs$.pipe(debug('Obserable A')).subscribe();
+
+// OUTPUT:
+// Obserable A    my test value
+
+// We can label it using the config object syntax:
+const obs$ = of('my test value');
+obs$.pipe(debug({ label: 'Obserable A' })).subscribe();
+
+// OUTPUT:
+// Obserable A    my test value
+
+// However, if we add a label and custom notification handlers,
+// we will not get the label in the logs by default:
+const obs$ = of('my test value');
+obs$
+  .pipe(
+    debug({
+      label: 'Obserable A',
+      next: (value) => console.log(value),
+    })
+  )
+  .subscribe();
 
 // OUTPUT:
 // my test value
@@ -98,9 +136,10 @@ obs$
 
 See the list of options available to configure the operator below
 
-| Option         |                            Description                             | Type                      | Default         |
-| -------------- | :----------------------------------------------------------------: | ------------------------- | --------------- |
-| `shouldIgnore` |                  Do not perform the Debug actions                  | `boolean`                 | `false`         |
-| `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`      | `console.log`   |
-| `error`        |   Action to perform when Observer receives an Error notification   | `(value: unkown) => void` | `console.error` |
-| `complete`     | Action to perform when Observer receives a Completion notification | `() => void`              | `() => null`    |
+| Option         |                            Description                             | Type                       | Default         |
+| -------------- | :----------------------------------------------------------------: | -------------------------- | --------------- |
+| `shouldIgnore` |                  Do not perform the Debug actions                  | `boolean`                  | `false`         |
+| `label`        |      Add a label to the logs to help identify the Observable       | `string`                   | `null`          |
+| `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`       | `console.log`   |
+| `error`        |   Action to perform when Observer receives an Error notification   | `(value: unknown) => void` | `console.error` |
+| `complete`     | Action to perform when Observer receives a Completion notification | `() => void`               | `() => null`    |
