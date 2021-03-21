@@ -126,9 +126,82 @@ obs$
 // I completed
 ```
 
+We can access the default logger for more flexibility:
+
+```js
+const obs$ = of('my test value');
+
+obs$
+  .pipe(
+    debug((logger) => ({
+      next: (v) => logger.warn('Warning!', v),
+    }))
+  )
+  .subscribe();
+
+// OUTPUT
+// WARN: Warning!   my test value
+```
+
+## Setting Global Config
+
+You can set some globals that make it more convenient to change:
+
+- the default logger
+- a global prefix to be appended to all logs
+- a global-level ignore flag
+
+### Change the Default Logger
+
+You can change the default logger by creating an object that matches the `DebugLogger` interface, which can be seen below:
+
+```ts
+export interface DebugLogger {
+  log: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+  warn?: (...args: unknown[]) => void;
+  debug?: (...args: unknown[]) => void;
+  info?: (...args: unknown[]) => void;
+}
+```
+
+Once you have created your new logger, you can set it to be used as the default logger using `setGlobalDebugConfig()`
+
+```js
+setGlobalDebugConfig({
+  logger: myNewLogger,
+});
+```
+
+Now all your `debug()` operators will use your new logger to log the values it receives.
+
+### Adding a Global Prefix
+
+You can also add a string prefix to all your logs at a global level, which can be useful to help identify logs.
+
+```js
+setGlobalDebugConfig({
+  prefix: myNewLogger,
+});
+```
+
+### Setting whether to ignore logging
+
+You can also set whether all `debug()` should not log at the global level. This can be useful for turning it off in production environments.
+
+```js
+setGlobalDebugConfig({
+  shouldIgnore: isProduction,
+});
+```
+
+### **NOTES**
+
+**It should be noted that local config options passed to the `debug()` operator will take precedence over any global values**
+
 ## API
 
-### Signature
+### Debug
 
 `debug(config?: Partial<DebugOperatorConfig>)`
 
@@ -143,3 +216,25 @@ See the list of options available to configure the operator below
 | `next`         |    Action to perform when Observer receives a Next notification    | `(value: T) => void`       | `console.log`   |
 | `error`        |   Action to perform when Observer receives an Error notification   | `(value: unknown) => void` | `console.error` |
 | `complete`     | Action to perform when Observer receives a Completion notification | `() => void`               | `() => null`    |
+
+### Global Debug Config
+
+`setGlobalDebugConfig(config: Partial<GlobalDebugConfig>)`
+
+### GlobalDebugConfig
+
+| Option         |                       Description                       | Type          | Default   |
+| -------------- | :-----------------------------------------------------: | ------------- | --------- |
+| `shouldIgnore` |            Do not perform the Debug actions             | `boolean`     | `false`   |
+| `prefix`       | Add a label to the logs to help identify the Observable | `string`      | `null`    |
+| `logger`       |    Logger to use to log values recieved by `debug()`    | `DebugLogger` | `console` |
+
+### DebugLogger
+
+| Option   | Description | Type                           | Default         |
+| -------- | :---------: | ------------------------------ | --------------- |
+| `log`    |  Basic log  | `(...args: unknown[]) => void` | `console.log`   |
+| `error`  |  Error log  | `(...args: unknown[]) => void` | `console.error` |
+| `info?`  |  Info log   | `(...args: unknown[]) => void` | `console.info`  |
+| `warn?`  |  Warn log   | `(...args: unknown[]) => void` | `console.warn`  |
+| `debug?` |  Debug log  | `(...args: unknown[]) => void` | `console.debug` |
