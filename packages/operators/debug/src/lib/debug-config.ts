@@ -1,28 +1,5 @@
 import { Observer } from 'rxjs/internal/types';
-import { DebugLogger, defaultLogger } from './debug-logger';
-
-export interface GlobalDebugConfig {
-  logger: DebugLogger;
-  prefix: string;
-  shouldIgnore: boolean;
-}
-
-export function createDefaultGlobalDebugConfig() {
-  return {
-    logger: defaultLogger,
-    prefix: null,
-    shouldIgnore: false,
-  };
-}
-
-/**
- * @private DO NOT USE DIRECTLY
- */
-export let GLOBAL_CONFIG: GlobalDebugConfig = createDefaultGlobalDebugConfig();
-
-export function setGlobalDebugConfig(config: Partial<GlobalDebugConfig>) {
-  GLOBAL_CONFIG = { ...GLOBAL_CONFIG, ...config };
-}
+import { GLOBAL_CONFIG } from './global-debug-config';
 
 export interface DebugOperatorConfig<T> extends Omit<Observer<T>, 'closed'> {
   shouldIgnore: boolean;

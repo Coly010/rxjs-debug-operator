@@ -1,12 +1,9 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MonoTypeOperatorFunction } from 'rxjs/internal/types';
-import {
-  createDefaultConfig,
-  DebugOperatorConfig,
-  GLOBAL_CONFIG,
-} from './debug-config';
+import { createDefaultConfig, DebugOperatorConfig } from './debug-config';
 import { DebugLogger } from './debug-logger';
+import { GLOBAL_CONFIG } from './global-debug-config';
 
 /**
  * Used to help debug the observable as it receives notifications

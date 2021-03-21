@@ -1,10 +1,10 @@
 import { of, throwError } from 'rxjs';
+import { DebugOperatorConfig } from './debug-config';
+import { DebugLogger } from './debug-logger';
 import {
   createDefaultGlobalDebugConfig,
-  DebugOperatorConfig,
   setGlobalDebugConfig,
-} from './debug-config';
-import { DebugLogger } from './debug-logger';
+} from './global-debug-config';
 import { debug } from './operators-debug';
 
 describe('operators - debug', () => {
