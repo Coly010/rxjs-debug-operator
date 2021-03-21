@@ -1,11 +1,25 @@
 import { of, throwError } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { debug, DebugOperatorConfig } from './operators-debug';
+import {
+  createDefaultGlobalDebugConfig,
+  DebugOperatorConfig,
+  setGlobalDebugConfig,
+} from './debug-config';
+import { DebugLogger } from './debug-logger';
+import { debug } from './operators-debug';
 
 describe('operators - debug', () => {
+  let testLogger: DebugLogger;
+
   beforeEach(() => {
     console.log = jest.fn();
     console.error = jest.fn();
+
+    testLogger = {
+      log: console.log,
+      error: console.error,
+    };
+
+    setGlobalDebugConfig({ logger: testLogger });
   });
 
   describe('when shouldIgnore is false', () => {
@@ -17,7 +31,7 @@ describe('operators - debug', () => {
       obs$.pipe(debug()).subscribe();
 
       // ASSERT
-      expect(console.log).toHaveBeenCalledWith('my test value');
+      expect(testLogger.log).toHaveBeenCalledWith('my test value');
     });
 
     it('should error value to the console when error notification receieved', () => {
@@ -28,7 +42,7 @@ describe('operators - debug', () => {
       obs$.pipe(debug()).subscribe();
 
       // ASSERT
-      expect(console.error).toHaveBeenCalledWith('my error value');
+      expect(testLogger.error).toHaveBeenCalledWith('my error value');
     });
   });
 
@@ -396,6 +410,148 @@ describe('operators - debug', () => {
             'Test Label completed'
           );
         });
+      });
+    });
+  });
+
+  describe('when we change the global config', () => {
+    describe('by setting a new logger', () => {
+      beforeEach(() => {
+        console.warn = jest.fn();
+        console.debug = jest.fn();
+
+        setGlobalDebugConfig({
+          logger: {
+            log: console.warn,
+            error: console.debug,
+          },
+        });
+      });
+
+      it('should use the new logger to log the next notification', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug()).subscribe();
+
+        // ASSERT
+        expect(console.warn).toHaveBeenCalled();
+        expect(console.warn).toHaveBeenCalledWith('my test value');
+      });
+
+      it('should use the new logger to log the error notification', () => {
+        // ARRANGE
+        const obs$ = throwError('my error value');
+
+        // ACT
+        obs$.pipe(debug()).subscribe();
+
+        // ASSERT
+        expect(console.debug).toHaveBeenCalled();
+        expect(console.debug).toHaveBeenCalledWith('my error value');
+      });
+
+      it('should allow for local overwrites of global config', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug({ next: console.log })).subscribe();
+
+        // ASSERT
+        expect(console.log).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith('my test value');
+      });
+
+      it('should allow usage of the global logger for local overwrites', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$
+          .pipe(
+            debug((logger) => ({
+              next: () => logger.log('I changed this completely'),
+            }))
+          )
+          .subscribe();
+
+        // ASSERT
+        expect(console.warn).toHaveBeenCalled();
+        expect(console.warn).toHaveBeenCalledWith('I changed this completely');
+      });
+    });
+
+    describe('by setting a prefix', () => {
+      beforeEach(() => {
+        setGlobalDebugConfig({
+          prefix: 'Test Prefix',
+        });
+      });
+
+      it('should use the new prefix when logging the next notification', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug()).subscribe();
+
+        // ASSERT
+        expect(console.log).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith(
+          'Test Prefix',
+          'my test value'
+        );
+      });
+
+      it('should prepend the new prefix to a label when logging the next notification', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug('my label')).subscribe();
+
+        // ASSERT
+        expect(console.log).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith(
+          'Test Prefix my label',
+          'my test value'
+        );
+      });
+    });
+
+    describe('by setting a global shouldIgnore value', () => {
+      beforeEach(() => {
+        setGlobalDebugConfig({
+          ...createDefaultGlobalDebugConfig(),
+          logger: testLogger, // Have to reset to get the Jest Mock
+          shouldIgnore: true,
+        });
+      });
+
+      it('should not log the next notification', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug()).subscribe();
+
+        // ASSERT
+        expect(console.log).not.toHaveBeenCalled();
+        expect(console.log).not.toHaveBeenCalledWith('my test value');
+      });
+
+      it('should allow local overwrite of global shouldIgnore', () => {
+        // ARRANGE
+        const obs$ = of('my test value');
+
+        // ACT
+        obs$.pipe(debug({ shouldIgnore: false })).subscribe();
+
+        // ASSERT
+        expect(console.log).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith('my test value');
       });
     });
   });
