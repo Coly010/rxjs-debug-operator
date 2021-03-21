@@ -181,7 +181,7 @@ You can also add a string prefix to all your logs at a global level, which can b
 
 ```js
 setGlobalDebugConfig({
-  prefix: myNewLogger,
+  prefix: 'My Prefix',
 });
 ```
 
