@@ -195,6 +195,39 @@ setGlobalDebugConfig({
 });
 ```
 
+### Example Winston Usage
+
+```ts
+import { DebugLogger, setGlobalDebugConfig } from 'rxjs-debug-operator';
+const winston = require('winston');
+
+const sysLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    //
+    // - Write all logs with level `error` and below to `error.log`
+    // - Write all logs with level `info` and below to `combined.log`
+    //
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
+
+const debugLogger: DebugLogger = {
+  log: (v) => sysLogger.info(v),
+  error: (e) => sysLogger.error(e),
+};
+
+setGlobalDebugConfig({ logger: debugLogger });
+
+const obs$ = of('my test value');
+obs$.pipe(debug()).subscribe();
+
+// OUTPUT
+// 'my test value' written to `combined.log`
+```
+
 ### **NOTES**
 
 **It should be noted that local config options passed to the `debug()` operator will take precedence over any global values**
