@@ -1,4 +1,4 @@
-import { Observer } from 'rxjs/internal/types';
+import { Observer } from 'rxjs';
 import { GLOBAL_CONFIG } from './global-debug-config';
 
 export interface DebugOperatorConfig<T> extends Omit<Observer<T>, 'closed'> {
